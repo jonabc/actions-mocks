@@ -7,9 +7,12 @@ const stream = require('stream');
 async function runAction(actionScript, options) {
   options = options || {}
 
+  const mocksDir = path.join(__dirname, 'lib', 'mocks');
+
   // always run the loader first
   const nodeArgs = [
-    path.join(__dirname, 'lib', 'loader')
+    path.join(__dirname, 'lib', 'loader'),
+    ...(await fs.readdir(mocksDir)).map(file => path.join(mocksDir, file))
   ];
 
   const execOptions = { ...options };
@@ -19,16 +22,11 @@ async function runAction(actionScript, options) {
   };
 
   if (options.mocks) {
-    // try to find a mock file for each requested mocks property
-    // keys should match actions toolkit package names, i.e. `exec` or `github`
+    // send mocks configs to the child process
+    // mocks keys should match actions toolkit package names, i.e. `exec` or `github`
     for(let key in options.mocks) {
-      const mockPath = path.join(__dirname, 'lib', 'mocks', `${key}.js`);
-      if (await fs.access(mockPath).then(() => true).catch(() => false)) {
-        // load the mock
-        nodeArgs.push(mockPath);
-        // send the mock options to the child process through ENV
-        execOptions.env[`${key.toUpperCase()}_MOCKS`] = JSON.stringify(options.mocks[key]);
-      }
+      // send the mock options to the child process through ENV
+      execOptions.env[`${key.toUpperCase()}_MOCKS`] = JSON.stringify(options.mocks[key]);
     }
   }
 
