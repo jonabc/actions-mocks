@@ -5,6 +5,8 @@ const path = require('path');
 const stream = require('stream');
 
 async function runAction(actionScript, options) {
+  options = options || {}
+
   // always run the loader first
   const nodeArgs = [
     path.join(__dirname, 'lib', 'loader')
