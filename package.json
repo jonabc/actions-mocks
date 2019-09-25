@@ -1,0 +1,39 @@
+{
+  "name": "actions-mocks",
+  "version": "1.0.0",
+  "description": "Mocks and utilities to help when testing GitHub Actions",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "eslint **.js",
+    "test": "eslint **.js && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonabc/actions-mocks.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "Test",
+    "Mock"
+  ],
+  "author": "Jon Ruskin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jonabc/actions-mocks/issues"
+  },
+  "homepage": "https://github.com/jonabc/actions-mocks#readme",
+  "dependencies": {
+    "@actions/exec": "^1.0.1",
+    "@actions/github": "^1.1.0",
+    "nock": "^11.3.5",
+    "sinon": "^7.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0"
+  }
+}
