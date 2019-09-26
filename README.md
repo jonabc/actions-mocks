@@ -1,22 +1,31 @@
 # actions-mocks
 Mocking helpers to use when end-to-end testing GitHub Actions
 
-
 ## Usage
 
-There is one exported method, `runAction(action, options)`
+There is one exported method, `run(action, { mocks, env })`
 - `action` (required) is the full path to the action script to run
-- `options` (optional) contains the options to run the action with
+- `mocks` (optional) configurations for mocking `@actions` modules
+- `env` (optional) environment to set on action process
 
-All mocks are enabled by default to provide a safe environment to run actions locally.
+All mocks are enabled by default to provide a safe environment to run actions locally.  They can be configured by setting `mocks.<actions toolkit package name> = [<mock expectations>]`. All mock expectations MUST be serializable using `JSON.stringify`.
 
-Mocks are configured by setting `options.mocks.<actions toolkit package name> = [<mock expectations>]`, where all mock expectations MUST be serializable using `JSON.stringify`.
+e.g. `mocks.exec = [{ command: 'git commit', exitCode: 1 }]`
+
+`run` returns an object `{ out, err, status }`.
+- `out`: the full log of output written to `stdout`
+- `err`: the full log of output written to `stderr`
+- `status`: the exit code of the action
+
+The majority of the content in the
 
 See the [tests](./test/index.test.js) for more examples.
 
 ### Mocking `@actions/exec`
 
-By default, any calls to `@actions/exec.exec` that doesn't match specified configuration will return a 127 exit code.  
+The `@actions/exec` mock catches all calls to `@actions/exec.exec`, logs the full command and it's execution options to `stdout`, and returns an exit code.  Any calls that don't match any configuration entries from `mocks.exec` will return 127 by default.
+
+Calls are logged as `<full command with args> <key>:<value> <key>:<value>` where key/value pairs are from the `options` object passed to `@actions/exec.exec`.
 
 The mocked call returns a promise that is resolved for a 0 exit code and rejected for all other exit codes.  Calls to `@actions/exec.exec` that specify `options: { ignoreReturnCode: true }` will never be rejected.
 
@@ -50,6 +59,10 @@ Command patterns are prioritized based on their location in the passed in array.
 ```
 
 ### Mocking `@actions/github`
+
+The `@actions/github` mock uses `nock` to catch all calls to `https://api.github.com`.  The mock logs all API requests to `stdout` and returns a response.  Any API calls that don't match any configuration entries from `mocks.github` will return a `404` code by default.
+
+Calls are logged as `<method (uppercase)> <path?query> <request body>`.
 
 By default, any API calls using an octokit/rest.js instance return from `new @actions/github.GitHub` that doesn't match specified configuration will return a 404 response.
 
