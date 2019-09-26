@@ -4,16 +4,20 @@ const os = require('os');
 const path = require('path');
 const stream = require('stream');
 
+const mocksDir = path.join(__dirname, 'lib', 'mocks');
+const nodeArgs = [];
+async function loadMocks() {
+  if (nodeArgs.length == 0) {
+    nodeArgs.push(
+      // always run the loader first
+      path.join(__dirname, 'lib', 'loader'),
+      ...(await fs.readdir(mocksDir)).map(file => path.join(mocksDir, file))
+    );
+  }
+}
+
 async function runAction(actionScript, options) {
   options = options || {}
-
-  const mocksDir = path.join(__dirname, 'lib', 'mocks');
-
-  // always run the loader first
-  const nodeArgs = [
-    path.join(__dirname, 'lib', 'loader'),
-    ...(await fs.readdir(mocksDir)).map(file => path.join(mocksDir, file))
-  ];
 
   const execOptions = { ...options };
   execOptions.env = {
@@ -40,9 +44,9 @@ async function runAction(actionScript, options) {
   execOptions.outStream = new stream.Writable({ write: data => outString += data + os.EOL });
   execOptions.errStream = new stream.Writable({ write: data => errString += data + os.EOL });
 
-  nodeArgs.push(actionScript);
 
-  const exitCode = await exec('node', nodeArgs, execOptions);
+  await loadMocks();
+  const exitCode = await exec('node', [...nodeArgs, action], execOptions);
   return { out: outString, err: errString, status: exitCode };
 }
 
