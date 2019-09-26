@@ -16,7 +16,7 @@ async function loadMocks() {
   }
 }
 
-async function run({ action, mocks = {}, env = {} }) {
+async function run(action, { mocks = {}, env = {} } = {}) {
   const options = {
     env: {
       ...process.env, // send process.env to action under test
