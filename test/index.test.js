@@ -1,7 +1,7 @@
-const { runAction } = require('../index');
+const { run } = require('../index');
 const path = require('path');
 
-describe('runAction', () => {
+describe('run', () => {
   it('mocks exec calls in an action', async () => {
     const action = path.join(__dirname, 'fixtures', 'exec-action');
     const mocks = {
@@ -11,7 +11,7 @@ describe('runAction', () => {
         { command: 'test-not-ignored', exitCode: 3 }
       ]
     };
-    const { out, err, status } = await runAction(action, { mocks });
+    const { out, err, status } = await run(action, { mocks });
     expect(status).toEqual(0);
     expect(out).toMatch('test-fail fail-arg');
     expect(out).toMatch('test-fail exited with status 1');
@@ -39,7 +39,7 @@ describe('runAction', () => {
       ]
     };
 
-    const { out, err, status } = await runAction(action, { mocks });
+    const { out, err, status } = await run(action, { mocks });
     expect(status).toEqual(0);
     // verify response body is sent
     expect(out).toMatch('GET /user/repos');
@@ -58,7 +58,7 @@ describe('runAction', () => {
     process.env.FROM_ENV = "from env";
     const action = path.join(__dirname, 'fixtures', 'env-action');
     const env = { FROM_ARGS: "from args" };
-    const { out, err, status } = await runAction(action, { env });
+    const { out, err, status } = await run(action, { env });
     expect(status).toEqual(0);
     expect(out).toMatch("\"FROM_ENV\":\"from env\"");
     expect(out).toMatch("\"FROM_ARGS\":\"from args\"");
@@ -66,14 +66,14 @@ describe('runAction', () => {
 
   it('doesn\'t error if the action fails', async () => {
     const action = path.join(__dirname, 'fixtures', 'fail-action');
-    const { out, err, status } = await runAction(action, {});
+    const { out, err, status } = await run(action);
     expect(status).toEqual(1);
     expect(err).toMatch('run error');
   });
 
   it('doesn\'t error if the action throws an error', async () => {
     const action = path.join(__dirname, 'fixtures', 'error-action');
-    const { out, err, status } = await runAction(action, {});
+    const { out, err, status } = await run(action);
     expect(status).toEqual(1);
     expect(err).toMatch('Error: run error');
   });
