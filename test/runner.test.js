@@ -1,4 +1,4 @@
-const { run } = require('../index');
+const run = require('../lib/runner');
 const path = require('path');
 
 describe('run', () => {
