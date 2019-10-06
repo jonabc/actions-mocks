@@ -4,8 +4,14 @@ on: push
 jobs:
   npm_test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [10, 12]
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
 
     - run: npm install
     - run: npm run test
