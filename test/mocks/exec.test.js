@@ -49,7 +49,7 @@ it('includes process.env.EXEC_MOCKS on load', async () => {
 it('returns a failure exit code if a command isn\'t mocked', async () => {
   mocks.setLog(() => {});
   mocks.clear();
-  await expect(exec.exec('command', ['test'])).rejects.toEqual(1);
+  await expect(exec.exec('command', ['test'])).rejects.toEqual(127);
 });
 
 describe('mock', () => {
