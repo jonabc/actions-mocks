@@ -1,10 +1,11 @@
 {
-  "name": "actions-mocks",
+  "name": "@jonabc/actions-mocks",
   "version": "1.0.0",
   "description": "Mocks and utilities to help when testing GitHub Actions",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "test": "test"
   },
   "scripts": {
     "lint": "eslint **.js",
