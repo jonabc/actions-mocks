@@ -101,6 +101,17 @@ describe('mock', () => {
     expect(JSON.parse(data)).toEqual(require(fixture));
   });
 
+  it('sends headers with the mock response', async () => {
+    const fixture = path.normalize(path.join(__dirname, '..', 'fixtures', 'repos.json'));
+    mocks.mock({ method: 'GET', uri: '', file: fixture, headers: { 'content-type': 'application/json' } });
+
+    const { data, headers } = await octokit.issues.list();
+    expect(headers).toEqual({ 'content-type': 'application/json' });
+
+    // with the proper content type set, this is returned as a json object
+    expect(data).toEqual(require(fixture));
+  });
+
   it('sets a count of times the mock should trigger', async () => {
     mocks.mock([
       { method: 'GET', uri: '', responseCode: 201, count: 1 },
