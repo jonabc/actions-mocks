@@ -1,6 +1,6 @@
 // default state of mocks when module is loaded
 process.env.GITHUB_MOCKS = JSON.stringify([
-  { method: 'GET', uri: '', responseCode: 200 }
+  { method: 'GET', uri: '', code: 200 }
 ])
 
 const github = require('@actions/github');
@@ -19,8 +19,8 @@ afterEach(() => {
 it('uses the first found mock', async () => {
   mocks.setLog(() => {});
   mocks.mock([
-    { method: 'GET', uri: '', responseCode: 400 },
-    { method: 'GET', uri: '', responseCode: 500 }
+    { method: 'GET', uri: '', code: 400 },
+    { method: 'GET', uri: '', code: 500 }
   ]);
 
   await expect(octokit.issues.list()).rejects.toHaveProperty('status', 400);
@@ -36,7 +36,7 @@ it('logs the mocked request', async () => {
 
 it('returns a rejected promise if the response code is not successful', async () => {
   mocks.setLog(() => {});
-  mocks.mock({ method: 'GET', uri: '', responseCode: 404 });
+  mocks.mock({ method: 'GET', uri: '', code: 404 });
   await expect(octokit.issues.list()).rejects.toHaveProperty('status', 404);
 });
 
@@ -59,15 +59,15 @@ describe('mock', () => {
   });
 
   it('prepends a command to be mocked', async () => {
-    mocks.mock({ method: 'GET', uri: '/issues', responseCode: 202 });
+    mocks.mock({ method: 'GET', uri: '/issues', code: 202 });
     const { status } = await octokit.issues.list();
     expect(status).toEqual(202);
   });
 
   it('prepends an array of commands to be mocked', async () => {
     mocks.mock([
-      { method: 'GET', uri: '/issues', responseCode: 201 },
-      { method: 'GET', uri: '/users', responseCode: 202 }
+      { method: 'GET', uri: '/issues', code: 201 },
+      { method: 'GET', uri: '/users', code: 202 }
     ]);
     let { status } = await octokit.issues.list();
     expect(status).toEqual(201);
@@ -114,8 +114,8 @@ describe('mock', () => {
 
   it('sets a count of times the mock should trigger', async () => {
     mocks.mock([
-      { method: 'GET', uri: '', responseCode: 201, count: 1 },
-      { method: 'GET', uri: '', responseCode: 202 }
+      { method: 'GET', uri: '', code: 201, count: 1 },
+      { method: 'GET', uri: '', code: 202 }
     ]);
 
     let { status } = await octokit.issues.list();
@@ -132,7 +132,7 @@ describe('clear', () => {
   });
 
   it('clears the known mocks', async () => {
-    mocks.mock({ method: 'GET', uri: '', responseCode: 200 });
+    mocks.mock({ method: 'GET', uri: '', code: 200 });
     mocks.clear();
 
     await expect(octokit.issues.list()).rejects.toHaveProperty('status', 404);
@@ -153,7 +153,7 @@ describe('restore', () => {
     let fakeLog = '';
     const fake = sinon.fake(log => fakeLog += log);
 
-    mocks.mock({ method: 'GET', uri: '', responseCode: 400 });
+    mocks.mock({ method: 'GET', uri: '', code: 400 });
     mocks.setLog(fake);
     mocks.restore();
 
