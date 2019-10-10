@@ -38,7 +38,7 @@ All mock classes are enabled by default to provide a safe environment to run act
 
 ```javascript
 mocks.exec = [{ command: 'git commit', exitCode: 1 }]
-mocks.github = [{ method: 'GET', uri: '/issues', response: 200 }]
+mocks.github = [{ method: 'GET', uri: '/issues', code: 200 }]
 ```
 
 `run` returns an object `{ out, err, status }`.
@@ -79,7 +79,7 @@ expect(output).toMatch('git add');
 // myLib.listIssues calls `octokit.issues.list()`
 output = '';
 mocks.github.setLog(log => output += log + os.EOL);
-mocks.github.mock({ method: 'GET', uri: '/issues', response: '[]', responseCode: 200 });
+mocks.github.mock({ method: 'GET', uri: '/issues', response: '[]', code: 200 });
 
 const { data, status } = await myLib.listIssues();
 expect(status).toEqual(200);
@@ -145,7 +145,7 @@ The `@actions/github` mock uses `nock` to catch all calls to `https://api.github
 2. returns a response
    1. status
       - calls that don't match any configured mocks will return a `404`
-      - calls that match a configured mock will return `responseCode`, or `200` if not set
+      - calls that match a configured mock will return `code`, or `200` if not set
    2. data
       - response data can be specified when configuring a mock using the `response` property
       - response data can be loaded from a fixture by using the `responseFixture` property
@@ -167,11 +167,19 @@ To configure the mock behavior, pass an array of objects with the following form
   // Uses String.prototype.match to perform regex evaluation
   uri: '/user/repos',
   // (optional) http code to set on the response, default: 200
+  code: 200,
+  // (DEPRECATED) Please use `code` to specify a response http code
+  // (optional) http code to set on the response, default: 200
   responseCode: 200,
   // (optional) response to send, given as a string
   response: '[]',
+  // (optional) path to load response contents from
+  file: 'path/to/file',
+  // (DEPRECATED) Please use `file` to load response contents from a file, along with headers `content-type` = `application/json`
   // (optional) response to send, given as a path to a JSON fixture to load
   responseFixture: '',
+  // (optional) headers to set on the mocked response
+  headers: {},
   // (optional) number of times the mock should be used.  defaults to a persistent mock if not set
   count: 1
 }
@@ -181,7 +189,7 @@ Command patterns are prioritized based on their location in the passed in array.
 
 ```javascript
 // `GET /user/repos` will return a 400
-{ method: 'GET', uri: '/user/repos', responseCode: 400 },
+{ method: 'GET', uri: '/user/repos', code: 400 },
 // all other `GET` commands will return 500
-{ method: 'GET', uri: '', responseCode: 500 }
+{ method: 'GET', uri: '', code: 500 }
 ```
