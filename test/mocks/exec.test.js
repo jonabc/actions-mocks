@@ -1,8 +1,3 @@
-// default state of mocks when module is loaded
-process.env.EXEC_MOCKS = JSON.stringify([
-  { command: '', exitCode: 0 }
-])
-
 const exec = require('@actions/exec');
 const mocks = require('../../lib/mocks/exec');
 const sinon = require('sinon');
@@ -10,6 +5,10 @@ const stream = require('stream');
 const os = require('os');
 
 let outString;
+
+beforeEach(() => {
+  mocks.mock({ command: '', exitCode: 0 });
+});
 
 afterEach(() => {
   mocks.restore();
@@ -154,8 +153,8 @@ describe('restore', () => {
     mocks.setLog(fake);
     mocks.restore();
 
-    const exitCode = await exec.exec('command');
-    expect(exitCode).not.toEqual(1);
+    const exitCode = await exec.exec('command', [], { ignoreReturnCode: true });
+    expect(exitCode).toEqual(127); // mock not found
     expect(fakeLog).toEqual('');
     expect(fake.callCount).toEqual(0);
     expect(outString).toMatch('command');

@@ -1,8 +1,3 @@
-// default state of mocks when module is loaded
-process.env.GITHUB_MOCKS = JSON.stringify([
-  { method: 'GET', uri: '', code: 200 }
-])
-
 const github = require('@actions/github');
 const mocks = require('../../lib/mocks/github');
 const sinon = require('sinon');
@@ -11,6 +6,10 @@ const path = require('path');
 const octokit = new github.GitHub('token');
 
 let outString;
+
+beforeEach(() => {
+  mocks.mock({ method: 'GET', uri: '', code: 200 });
+});
 
 afterEach(() => {
   mocks.restore();
@@ -157,8 +156,8 @@ describe('restore', () => {
     mocks.setLog(fake);
     mocks.restore();
 
-    const { status } = await octokit.issues.list();
-    expect(status).not.toEqual(400);
+    // expect mock request not found
+    await expect(octokit.issues.list()).rejects.toHaveProperty('status', 404);
     expect(fakeLog).toEqual('');
     expect(fake.callCount).toEqual(0);
     expect(outString).toMatch('GET /issues');

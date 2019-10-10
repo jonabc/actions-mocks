@@ -55,7 +55,6 @@ This package can be used for unit testing with the imported `mocks` object.
 Each `mocks` sub-object supports the following API:
 
 `mock` - Add one or more mock(s).  Accepts either a single mock configuration and an array of mock configurations.
-   - defaults to `JSON.parse(process.env.<MOCK NAME>_MOCKS || '[]')`
 `setLog` - Set the method used to log commands and API calls during testing
    - defaults to `console.log`
 `clear` - Clears all currently configured mocks
@@ -185,7 +184,7 @@ To configure the mock behavior, pass an array of objects with the following form
 }
 ```
 
-Command patterns are prioritized based on their location in the passed in array.
+Request patterns are prioritized based on their location in the passed in array.
 
 ```javascript
 // `GET /user/repos` will return a 400
