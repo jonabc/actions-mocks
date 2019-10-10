@@ -91,6 +91,16 @@ describe('mock', () => {
     expect(data).toEqual(require(fixture));
   });
 
+  it('sends a mock response loaded from a file', async () => {
+    const fixture = path.normalize(path.join(__dirname, '..', 'fixtures', 'repos.json'));
+    mocks.mock({ method: 'GET', uri: '', file: fixture });
+
+    const { data } = await octokit.issues.list();
+    // note that because the content-type header wasn't mocked,
+    // the data is returned as a string
+    expect(JSON.parse(data)).toEqual(require(fixture));
+  });
+
   it('sets a count of times the mock should trigger', async () => {
     mocks.mock([
       { method: 'GET', uri: '', responseCode: 201, count: 1 },
