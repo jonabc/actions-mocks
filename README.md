@@ -124,6 +124,9 @@ To configure the mock behavior, pass an array of objects with the following form
   stderr: '',
   // (optional) exit code to return, defaults to 0
   exitCode: 0,
+  // (optional) set true to call the original exec after logging the call
+  // if set, the `exitCode` argument is ignored
+  callOriginal: false,
   // (optional) number of times the mock should be used.  defaults to a persistent mock if not set
   count: 1
 }

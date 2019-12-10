@@ -39,12 +39,6 @@ it('returns a rejected promise if the response code is not successful', async ()
   await expect(octokit.issues.list()).rejects.toHaveProperty('status', 404);
 });
 
-it('includes process.env.GITHUB_MOCKS on load', async () => {
-  mocks.setLog(() => {});
-  const { status } = await octokit.issues.list();
-  expect(status).toEqual(200);
-});
-
 it('returns 404 if a route isn\'t mocked', async () => {
   mocks.setLog(() => {});
   mocks.clear();

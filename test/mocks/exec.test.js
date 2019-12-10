@@ -119,6 +119,21 @@ describe('mock', () => {
     exitCode = await exec.exec('command', [], { ignoreReturnCode: true });
     expect(exitCode).toEqual(2);
   });
+
+  it('calls through to the original function', async () => {
+    mocks.mock({ command: 'cat', callOriginal: true });
+
+    const options = {
+      listeners: {
+        stdout: data => outString += data.toString()
+      },
+      outStream: new stream.Writable({ write: data => outString += data })
+    };
+
+    // cat this file, and look for this test in the output
+    await exec.exec('cat', [__filename], options);
+    expect(outString).toMatch('calls through to the original function');
+  });
 });
 
 describe('clear', () => {
