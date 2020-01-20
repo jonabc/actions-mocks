@@ -56,9 +56,12 @@ Each `mocks` sub-object supports the following API:
 
 `mock` - Add one or more mock(s).  Accepts either a single mock configuration and an array of mock configurations.
    - defaults to `JSON.parse(process.env.<MOCK NAME>_MOCKS || '[]')`
+
 `setLog` - Set the method used to log commands and API calls during testing
    - defaults to `console.log`
+
 `clear` - Clears all currently configured mocks
+
 `restore` - Resets configured mocks and the logging method back to their defaults.
 
 ```javascript
