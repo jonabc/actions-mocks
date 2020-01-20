@@ -23,7 +23,7 @@ describe('run', () => {
     expect(out).toMatch('test-not-mocked exited with status 1');
 
     expect(out).toMatch('test-not-ignored');
-    expect(out).toMatch('test-not-ignored caught with status 3');
+    expect(out).toMatch('test-not-ignored caught with status Error: Failed with exit code 3');
   });
 
 
