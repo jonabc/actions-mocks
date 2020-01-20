@@ -37,7 +37,9 @@ it('logs the mocked command', async () => {
 it('returns a rejected promise if ignoreReturnCode is not set with an error exit code', async () => {
   mocks.setLog(() => {});
   mocks.mock({ command: 'command', exitCode: 2 });
-  await expect(exec.exec('command', ['test'])).rejects.toEqual(2);
+  await expect(exec.exec('command', ['test'])).rejects.toThrow(
+    'Failed with exit code 2'
+  );
 });
 
 it('includes process.env.EXEC_MOCKS on load', async () => {
@@ -49,7 +51,9 @@ it('includes process.env.EXEC_MOCKS on load', async () => {
 it('returns a failure exit code if a command isn\'t mocked', async () => {
   mocks.setLog(() => {});
   mocks.clear();
-  await expect(exec.exec('command', ['test'])).rejects.toEqual(127);
+  await expect(exec.exec('command', ['test'])).rejects.toThrow(
+    'Failed with exit code 127'
+  );
 });
 
 describe('mock', () => {

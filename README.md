@@ -100,10 +100,10 @@ The `@actions/exec` mock catches all calls to `@actions/exec.exec` and
 2. output provided `stdout` using the passed in options
 3. output provided `stderr` using the passed in options
 4. return an exit code
-   - if the command doesn't match a configured mock, returns 127
-   - if the command matches a configured mock, returns the configured `exitCode` or 0 if not set
+   - if the command doesn't match a configured mock, rejects with an error for exit code 127
+   - if the command matches a configured mock, resolves to the configured `exitCode` if 0 or rejects with an error for non-0 values
 
-The mocked call returns a promise that is resolved for a 0 exit code and rejected for all other exit codes.  Calls to `@actions/exec.exec` that specify `options: { ignoreReturnCode: true }` will never be rejected.
+The mocked call returns a promise that is resolved for a 0 exit code and rejected with an error for all other exit codes.  Calls to `@actions/exec.exec` that specify `options: { ignoreReturnCode: true }` will never be rejected.
 
 ```javascript
 // with a resolved mocked command
