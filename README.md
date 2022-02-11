@@ -1,3 +1,5 @@
+🚨 This project has been archived.  It's been largely unmaintained for over 2 years, and there are better tools and methods for testing GitHub Actions 😄
+
 # actions-mocks
 Mocking helpers for testing GitHub Actions
 
